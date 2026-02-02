@@ -11,12 +11,12 @@ typedef enum
     TIMER_UART5,
     TIMER_UART2,
     TIMER_FLAG_LED2,
-    TiMER_LED_ROSSO,
+    TiMER_LED_RED,
     TIMER_COUNT
 } TimerID_t;
 // Function declaration
 bool isTimerReady(TimerID_t id, unsigned long interval, bool);
 bool isTimerReady(TimerID_t id, unsigned long interval);
-bool isTimerActive(TimerID_t id, unsigned long duration, bool trigger)
+bool isTimerActive(TimerID_t id, unsigned long duration, bool &trigger);
 
 #endif

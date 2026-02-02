@@ -29,9 +29,11 @@ bool isTimerReady(TimerID_t id, unsigned long interval)
 
 /**
  * Returns true for the duration of 'duration' once 'trigger' is activated.
- * Useful for running code FOR a specific amount of time (e.g., running a pump for 10s).
+ * Automatically sets the 'trigger' variable back to false once started.
+ *
+ * @param trigger: Passed by reference (&), so it resets to false in the main loop.
  */
-bool isTimerActive(TimerID_t id, unsigned long duration, bool trigger)
+bool isTimerActive(TimerID_t id, unsigned long duration, bool &trigger)
 {
     static unsigned long startTime[TIMER_COUNT] = {0};
     static bool running[TIMER_COUNT] = {false};
@@ -39,23 +41,24 @@ bool isTimerActive(TimerID_t id, unsigned long duration, bool trigger)
     if (id < 0 || id >= TIMER_COUNT)
         return false;
 
-    // If trigger is hit, record start time and set state to running
+    // If trigger is true, start the timer and IMMEDIATELY reset the trigger
     if (trigger)
     {
         startTime[id] = millis();
         running[id] = true;
+        trigger = false; // This changes the variable in the calling code
     }
 
-    // Check if the timer is still within the duration
     if (running[id])
     {
+        // Check if we are still within the time window
         if (millis() - startTime[id] < duration)
         {
             return true;
         }
         else
         {
-            running[id] = false; // Duration expired
+            running[id] = false; // Time's up
         }
     }
 
